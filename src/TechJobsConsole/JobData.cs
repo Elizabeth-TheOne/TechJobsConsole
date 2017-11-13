@@ -15,17 +15,28 @@ namespace TechJobsConsole
             LoadData();
             return AllJobs;
         }
+        public static List<Dictionary<string, string>> FindByValue(string value)
+        {
+            LoadData();
+            List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
+            foreach (Dictionary<string, string> job in AllJobs)
+            {
+                foreach (KeyValuePair<string, string> pair in job)
+                {
+                    string newvalue = pair.Value.ToString().ToLower();
+                    if (newvalue.Contains(value.ToString().ToLower()))
+                    {
+                        jobs.Add(job);
+                    }
 
-        /*
-         * Returns a list of all values contained in a given column,
-         * without duplicates. 
-         */
+                }
+            }
+            return jobs;
+        }
         public static List<string> FindAll(string column)
         {
             LoadData();
-
             List<string> values = new List<string>();
-
             foreach (Dictionary<string, string> job in AllJobs)
             {
                 string aValue = job[column];
@@ -43,19 +54,13 @@ namespace TechJobsConsole
             // load data, if not already loaded
             LoadData();
 
-            string lowerColumn = column.ToLower(),
-            string lowerValue = column.ToLower(),
-
-
             List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
 
             foreach (Dictionary<string, string> row in AllJobs)
             {
-                string aValue = row[column];
+                string aValue = row[column].ToString().ToLower();
 
-                string aValueLower = aValue.ToLower(); 
-
-                if (aValue.Contains(value))
+                if (aValue.Contains(value.ToString().ToLower()))
                 {
                     jobs.Add(row);
                 }
@@ -69,12 +74,10 @@ namespace TechJobsConsole
          */
         private static void LoadData()
         {
-
             if (IsDataLoaded)
             {
                 return;
             }
-
             List<string[]> rows = new List<string[]>();
 
             using (StreamReader reader = File.OpenText("job_data.csv"))
@@ -89,7 +92,6 @@ namespace TechJobsConsole
                     }
                 }
             }
-
             string[] headers = rows[0];
             rows.Remove(headers);
 
@@ -104,10 +106,8 @@ namespace TechJobsConsole
                 }
                 AllJobs.Add(rowDict);
             }
-
             IsDataLoaded = true;
         }
-
         /*
          * Parse a single line of a CSV file into a string array
          */
